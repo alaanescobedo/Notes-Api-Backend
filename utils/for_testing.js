@@ -1,15 +1,18 @@
 const palindrome = (string) => {
-  return string.split('').reverse().join('');
-};
+  if (typeof string === 'undefined') return
+
+  return string.split('').reverse().join('')
+}
 
 const average = (array) => {
-  let sum = 0;
-  array.forEach((num) => {sum += num});
-  return sum / array.lenght;
-};
+  if (typeof array === 'undefined') return
+  if (array.length === 0) return 0
+  let sum = 0
+  array.forEach((num) => { sum += num })
+  return sum / array.length
+}
 
-
-module.export = {
+module.exports = {
   palindrome,
   average
 }
