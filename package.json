@@ -7,7 +7,7 @@
     "dev": "NODE_ENV=development nodemon app.js",
     "lint": "eslint .",
     "start": "NODE_ENV=production node app.js",
-    "test": "NODE_ENV=test jest --silent test/notes.test.js",
+    "test": "NODE_ENV=test jest --verbose --silent test/user.test.js",
     "test:watch": "npm run test -- --watch"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
   "dependencies": {
     "@sentry/node": "^6.3.5",
     "@sentry/tracing": "^6.3.5",
+    "bcrypt": "^5.0.1",
     "cors": "2.8.5",
     "dotenv": "8.2.0",
     "eslint-config-standard": "^16.0.2",

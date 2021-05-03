@@ -8,6 +8,8 @@ const express = require('express')
 const logger = require('./loggerMiddleware')
 const Note = require('./models/noteModel')
 const handleErrors = require('./middlewares/handleErrors')
+const userRouter = require('./routes/userRoutes')
+
 const app = express()
 
 process.on('uncaughtException', err => {
@@ -145,6 +147,8 @@ app.use((error, _, res, next) => {
     res.status(500).end()
   }
 })
+
+app.use('/api/v1/users', userRouter)
 
 // The error handler must be before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler())
