@@ -1,5 +1,16 @@
 POST http://localhost:3001/api/v1/notes
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.NjA5MGJlNjc0YWRiNTYyNjJlM2JiNjVh.uzzNmPiTVLWgp2iJn9YlX3-FhMtH8u6EzGmVQwqG49w
+
+{
+  "content": "ASDADSASDAD",
+  "important": true
+}
+
+
+####
+POST http://localhost:3001/api/v1/notes
+Content-Type: application/json
 
 {
   "content": "I sell burritos",

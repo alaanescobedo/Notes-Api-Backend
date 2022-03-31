@@ -1,19 +1,21 @@
-const mongoose = require('mongoose')
-const { server } = require('../app')
-
+const moongose = require('mongoose')
+const server = require('../server')
 const Note = require('../models/noteModel')
-const { api, initialNotes, getAllContentsFromNotes } = require('./helpers')
+const { api, initialNotes, getUser, getAllContentsFromNotes } = require('./helpers')
+require('events').EventEmitter.defaultMaxListeners = 15
 
 beforeEach(async () => {
   await Note.deleteMany({})
+  const user = await getUser()
 
   for (const note of initialNotes) {
     const noteObj = new Note(note)
+    noteObj.user = user.id
     await noteObj.save()
   }
 })
 
-describe('GET all notes', () => {
+describe('GET /', () => {
   test('notes are returned as json', async () => {
     await api
       .get('/api/v1/notes')
@@ -32,12 +34,16 @@ describe('GET all notes', () => {
   })
 })
 
-describe('POST a note', () => {
+describe('POST /', () => {
   test('a valid note can be added', async () => {
+    const user = await getUser()
+
     const newNote = {
       content: 'Soon async/await',
-      importan: true
+      importan: true,
+      userId: user.id
     }
+
     await api
       .post('/api/v1/notes')
       .send(newNote)
@@ -64,7 +70,7 @@ describe('POST a note', () => {
   })
 })
 
-describe('DELETE a note', () => {
+describe('DELETE /:id', () => {
   test('a note can be deleted', async () => {
     const { response: firstResponse } = await getAllContentsFromNotes()
     const { body: note } = firstResponse
@@ -90,8 +96,6 @@ describe('DELETE a note', () => {
 })
 
 afterAll(() => {
-  mongoose.connection.close()
-  if (server) {
-    server.close()
-  }
+  moongose.connection.close()
+  server.close()
 })

@@ -1,2 +1,3 @@
-GET http://localhost:3001/api/v1/notes/608dbdb51b4d4bcb79c8c49f
+
+GET http://localhost:3001/api/v1/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.NjA5MGJlNjc0YWRiNTYyNjJlM2JiNjVh.uzzNmPiTVLWgp2iJn9YlX3-FhMtH8u6EzGmVQwqG49w

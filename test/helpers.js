@@ -1,8 +1,8 @@
 const supertest = require('supertest')
-const { app } = require('../app')
+const server = require('../server')
 const User = require('../models/userModel')
 
-const api = supertest(app)
+const api = supertest(server)
 
 const initialNotes = [
   {
@@ -14,6 +14,24 @@ const initialNotes = [
     content: 'Browser can execute only JavaScript',
     date: new Date(),
     important: false
+  }
+]
+
+const initialUsers = [
+  {
+    username: 'alaan1132test',
+    name: 'AlanTest',
+    password: 'password1'
+  },
+  {
+    username: 'tacotest',
+    name: 'TacoTest',
+    password: 'password2'
+  },
+  {
+    username: 'churrotest',
+    name: 'ChurroTest',
+    password: 'password'
   }
 ]
 
@@ -30,9 +48,15 @@ const getAllUsers = async () => {
   return usersDB.map(user => user.toJSON())
 }
 
+const getUser = async () => {
+  return await User.findOne({})
+}
+
 module.exports = {
   api,
   initialNotes,
+  initialUsers,
   getAllContentsFromNotes,
-  getAllUsers
+  getAllUsers,
+  getUser
 }

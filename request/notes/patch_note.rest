@@ -1,4 +1,4 @@
-PATCH     http://localhost:3001/api/v1/notes/608dbd9ce71052cb577a92fd
+PATCH http://localhost:3001/api/v1/notes/608dbd9ce71052cb577a92fd
 Content-Type: application/json
 
 {

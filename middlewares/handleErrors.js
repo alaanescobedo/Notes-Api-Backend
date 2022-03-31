@@ -1,9 +1,11 @@
-module.exports = (error, req, res, next) => {
-  console.error(error)
-
+module.exports = (error, request, response, next) => {
   if (error.name === 'CastError') {
-    res.status(404).send({ error: 'id used is malformed' })
+    response.status(400).send({ error: 'id used is malformed' })
+  } else if (error.name === 'ValidationError') {
+    response.status(409).send({
+      error: error.message
+    })
   } else {
-    res.status(500).end()
+    response.status(500).end()
   }
 }

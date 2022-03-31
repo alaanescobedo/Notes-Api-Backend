@@ -1,23 +1,21 @@
 const User = require('../models/userModel')
-const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
-const { api, getAllUsers } = require('./helpers')
-const { server } = require('../app')
+const { api, initialUsers, getAllUsers } = require('./helpers')
+const mongoose = require('mongoose')
+const server = require('../server')
 
-describe.only('creating a new user', () => {
-  beforeEach(async () => {
-    await User.deleteMany({})
+beforeEach(async () => {
+  await User.deleteMany({})
 
+  for (const user of initialUsers) {
     const passwordHash = await bcrypt.hash('pass1234', 12)
-    const user = new User({
-      username: 'alaan1132test',
-      name: 'AlanTest',
-      password: passwordHash
-    })
+    user.password = passwordHash
+    const userObj = await new User(user)
+    await userObj.save()
+  }
+})
 
-    await user.save()
-  })
-
+describe('creating a new user', () => {
   test('works as expected creating a fresh username', async () => {
     const usersAtStart = await getAllUsers()
 
@@ -28,7 +26,7 @@ describe.only('creating a new user', () => {
     }
 
     await api
-      .post('/api/v1/users')
+      .post('/api/v1/users/signup')
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -40,11 +38,41 @@ describe.only('creating a new user', () => {
     const usernames = usersAtEnd.map(user => user.username)
     expect(usernames).toContain(newUser.username)
   })
+
+  test('creation fails with proper statusCode and message if username is already taken', async () => {
+    const usersAtStart = await getAllUsers()
+
+    const newUser = {
+      username: 'alaan1132test',
+      name: 'AlanTest',
+      password: 'passwordHash'
+    }
+
+    const result = await api
+      .post('/api/v1/users/signup')
+      .send(newUser)
+      .expect(409)
+      .expect('Content-Type', /application\/json/)
+
+    expect(result.body.error.code).toBe(11000)
+    const usersAtEnd = await getAllUsers()
+    expect(usersAtStart).toHaveLength(usersAtEnd.length)
+  })
+})
+
+describe('GET all users', () => {
+  test('works as expected getting all users', async () => {
+    const users = await getAllUsers()
+
+    const testUsers = await api
+      .get('/api/v1/users/')
+      .expect(200)
+
+    expect(testUsers.body).toHaveLength(users.length)
+  })
 })
 
 afterAll(() => {
   mongoose.connection.close()
-  if (server) {
-    server.close()
-  }
+  server.close()
 })

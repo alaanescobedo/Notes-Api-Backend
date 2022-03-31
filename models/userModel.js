@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -13,14 +14,19 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Password is required'],
-    select: false,
     minlength: 8
   },
-  notes: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Note'
-  }]
+  notes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Note'
+    }
+  ]
 })
+
+userSchema.methods.correctPassword = async function (password, passwordHashed) {
+  return await bcrypt.compare(password, passwordHashed)
+}
 
 userSchema.set('toJSON', {
   transform: (_, returnObject) => {
